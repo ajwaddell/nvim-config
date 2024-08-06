@@ -1,0 +1,2 @@
+const executiveSummary = await page.evaluate(() => localStorage.getItem('AJW'));
+console.log('AJW -- executiveSummary', executiveSummary);

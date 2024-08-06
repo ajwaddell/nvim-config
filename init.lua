@@ -91,7 +91,11 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+
+--disable netrw for nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,7 +106,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -162,10 +166,42 @@ vim.opt.scrolloff = 10
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
+vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- AJW
+vim.keymap.set('n', ';;', ':%s:::gc<Left><Left><Left><Left>')
+vim.keymap.set('n', ';:', ':%s///gc<Left><Left><Left><Left>')
+vim.keymap.set('v', ";'", ':s:::gc<Left><Left><Left><Left>')
+
 -- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+vim.keymap.set('n', '<leader>t', function() vim.cmd ':NvimTreeFindFileToggle' end, { desc = 'Toggle [T]reeview' })
+
+vim.keymap.set('n', '<leader>hr', function() vim.cmd ':Gitsigns reset_hunk' end, { desc = 'Git - [H]unk [R]eset' })
+vim.keymap.set('n', '<leader>hn', function() vim.cmd ':Gitsigns next_hunk' end, { desc = 'Git - [H]unk [N]ext' })
+vim.keymap.set('n', '<leader>hp', function() vim.cmd ':Gitsigns prev_hunk' end, { desc = 'Git - [H]unk [P]revious' })
+vim.keymap.set('n', '<leader>hd', function () vim.cmd ':Gitsigns preview_hunk' end, { desc = 'Git - [H]unk [D]iff' })
+vim.keymap.set('n', '<leader>df', function () vim.cmd ':Gitsigns diffthis' end, { desc = 'Git - [D]iff [F]ile' })
+vim.keymap.set('n', '<leader>bt', function () vim.cmd ':Gitsigns toggle_current_line_blame' end, { desc = 'Git - [B]lame [T]oggle' })
+vim.keymap.set('n', '<leader>bl', function () vim.cmd ':Gitsigns blame_line' end, { desc = 'Git - [B]lame [L]ine' })
+vim.keymap.set('n', '<leader>gf', function () vim.cmd ':OpenInGHFileLines' end, { desc = 'Git - [G]it [F]ile' })
+
+local function load_file(f)
+  vim.cmd('read ~/.config/nvim/snippets/' .. f)
+end
+
+vim.keymap.set('n', '<leader>ad', function () load_file('aw_debug') end, { desc = 'AJW - [A]w [D]ebug screen.debug' })
+vim.keymap.set('n', '<leader>al', function () load_file('aw_log') end, { desc = 'AJW - [A]w [L]og console.log' })
+
+vim.keymap.set('n', '<leader>anw', function () load_file('aw_no_warn') end, { desc = 'AJW - [A]w [N]o [W]arn no console warnings' })
+vim.keymap.set('n', '<leader>ape', function () load_file('aw_play_eval') end, { desc = 'AJW - [A]w [P]laywright [E]val' })
+vim.keymap.set('n', '<leader>apl', function () load_file('aw_play_log') end, { desc = 'AJW - [A]w [P]laywright [L]og' })
+vim.keymap.set('n', '<leader>ap', function () load_file('aw_props') end, { desc = 'AJW - [A]w [P]rops ' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -347,11 +383,14 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          file_ignore_patterns = {
+            'node_modules',
+          },
+          --   mappings = {
+          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          --   },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -376,6 +415,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = '[G]it [S]tatus' })
+      vim.keymap.set('n', '<leader>gt', builtin.git_stash, { desc = '[G]it S[t]ash' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -402,26 +444,11 @@ require('lazy').setup({
     end,
   },
 
-  -- LSP Plugins
-  {
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-      },
-    },
-  },
-  { 'Bilal2453/luvit-meta', lazy = true },
-  {
-    -- Main LSP Configuration
+  { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      -- Automatically install LSPs and related tools to stdpath for neovim
+      'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -429,8 +456,9 @@ require('lazy').setup({
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
-      -- Allows extra capabilities provided by nvim-cmp
-      'hrsh7th/cmp-nvim-lsp',
+      -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
+      -- used for completion, annotations and signatures of Neovim apis
+      { 'folke/neodev.nvim', opts = {} },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -507,6 +535,10 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
+          -- Opens a popup that displays documentation about the word under your cursor
+          --  See `:help K` for why this keymap
+          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -579,7 +611,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        tsserver = {},
         --
 
         lua_ls = {
@@ -593,6 +625,21 @@ require('lazy').setup({
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
+            },
+          },
+        },
+        jsonls = {
+          -- lazy-load schemastore when needed
+          on_new_config = function(new_config)
+            new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+            vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+          end,
+          settings = {
+            json = {
+              format = {
+                enable = true,
+              },
+              validate = { enable = true },
             },
           },
         },
@@ -628,43 +675,50 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    'dense-analysis/ale',
+    config = function()
+      -- Configuration goes here.
+      local g = vim.g
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_fallback = true }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-    },
+      g.ale_ruby_rubocop_auto_correct_all = 1
+      g.ale_set_quickfix = 1
+      g.ale_fix_on_save = 1
+
+      g.ale_linters = {
+        javascript = { 'eslint', 'prettier' },
+        javascriptreact = { 'eslint', 'prettier' },
+        typescript = { 'eslint', 'prettier' },
+        typescriptreact = { 'eslint', 'prettier' },
+        lua = { 'lua_language_server' },
+      }
+      g.ale_fixers = {
+        javascript = { 'eslint', 'prettier' },
+        javascriptreact = { 'eslint', 'prettier' },
+        typescript = { 'eslint', 'prettier' },
+        typescriptreact = { 'eslint', 'prettier' },
+      }
+    end,
   },
+  --  { -- Autoformat
+  --    'stevearc/conform.nvim',
+  --    opts = {
+  --      notify_on_error = false,
+  --      format_on_save = {
+  --        timeout_ms = 500,
+  --        lsp_fallback = true,
+  --      },
+  --      formatters_by_ft = {
+  --        lua = { 'stylua' },
+  --        -- Conform can also run multiple formatters sequentially
+  --        -- python = { "isort", "black" },
+  --        --
+  --        -- You can use a sub-list to tell conform to run *until* a formatter
+  --        -- is found.
+  --        -- javascript = { { "prettierd", "prettier" } },
+  --      },
+  --    },
+  --  },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -801,7 +855,7 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false, highlight = { comments_only = false } }},
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -870,6 +924,76 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  { -- Copilot
+    'github/copilot.vim',
+  },
+  { -- treeview
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons' },
+    },
+    config = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netwPlugin = 1
+      require('nvim-tree').setup {
+        view = {
+          width = 60,
+        },
+      }
+    end,
+  },
+  {
+    'Almo7aya/openingh.nvim',
+  },
+{
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+local harpoon = require("harpoon")
+
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Har[P]oon [A]dd file' })
+vim.keymap.set("n", "<leader>pc", function() require('harpoon'):list():remove() end, { desc = 'Har[P]oon [C]lear all files' })
+--vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+
+local conf = require("telescope.config").values
+local function toggle_telescope(harpoon_files)
+    local file_paths = {}
+    for _, item in ipairs(harpoon_files.items) do
+        table.insert(file_paths, item.value)
+    end
+
+    require("telescope.pickers").new({}, {
+        prompt_title = "Harpoon",
+        finder = require("telescope.finders").new_table({
+            results = file_paths,
+        }),
+        previewer = conf.file_previewer({}),
+        sorter = conf.generic_sorter({}),
+    }):find()
+end
+
+vim.keymap.set("n", "<leader>sp", function() toggle_telescope(harpoon:list()) end,
+    { desc = "[S]earch [H]arpoon window" })
+
+
+--vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+    end,
+}
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and

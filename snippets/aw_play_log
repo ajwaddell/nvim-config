@@ -1,0 +1,2 @@
+page.on('console', (msg) => {
+if (msg.text().includes('AJW')) console.log(msg.text());

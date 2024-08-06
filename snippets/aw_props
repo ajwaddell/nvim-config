@@ -1,0 +1,7 @@
+const propFunctions = {};
+for (const [k, v] of Object.entries(this.props))
+	if (typeof v === 'function') propFunctions[k] = '__function__';
+	console.log('AJW -- this.props', this.props);
+	console.log('AJW -- this.props stringify', JSON.stringify(this.props));
+	console.log('AJW -- this.props functions stringify', JSON.stringify(propFunctions));
+});
