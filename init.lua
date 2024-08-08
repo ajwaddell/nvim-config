@@ -874,31 +874,13 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'javascript', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -946,54 +928,115 @@ require('lazy').setup({
   {
     'Almo7aya/openingh.nvim',
   },
-{
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-local harpoon = require("harpoon")
+  {
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+      dependencies = { "nvim-lua/plenary.nvim" },
+      config = function()
+        local harpoon = require("harpoon")
 
--- REQUIRED
-harpoon:setup()
--- REQUIRED
+        -- REQUIRED
+        harpoon:setup()
+        -- REQUIRED
 
-vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Har[P]oon [A]dd file' })
-vim.keymap.set("n", "<leader>pc", function() require('harpoon'):list():remove() end, { desc = 'Har[P]oon [C]lear all files' })
---vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+        vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Har[P]oon [A]dd file' })
+        vim.keymap.set("n", "<leader>pc", function() require('harpoon'):list():remove() end, { desc = 'Har[P]oon [C]lear all files' })
+        --vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
-vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+        vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+        vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+        vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+        vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
 
--- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+        -- Toggle previous & next buffers stored within Harpoon list
+        vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+        vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
 
-local conf = require("telescope.config").values
-local function toggle_telescope(harpoon_files)
-    local file_paths = {}
-    for _, item in ipairs(harpoon_files.items) do
-        table.insert(file_paths, item.value)
-    end
+        local conf = require("telescope.config").values
+        local function toggle_telescope(harpoon_files)
+            local file_paths = {}
+            for _, item in ipairs(harpoon_files.items) do
+                table.insert(file_paths, item.value)
+            end
 
-    require("telescope.pickers").new({}, {
-        prompt_title = "Harpoon",
-        finder = require("telescope.finders").new_table({
-            results = file_paths,
-        }),
-        previewer = conf.file_previewer({}),
-        sorter = conf.generic_sorter({}),
-    }):find()
-end
+            require("telescope.pickers").new({}, {
+                prompt_title = "Harpoon",
+                finder = require("telescope.finders").new_table({
+                    results = file_paths,
+                }),
+                previewer = conf.file_previewer({}),
+                sorter = conf.generic_sorter({}),
+            }):find()
+        end
 
-vim.keymap.set("n", "<leader>sp", function() toggle_telescope(harpoon:list()) end,
-    { desc = "[S]earch [H]arpoon window" })
+        vim.keymap.set("n", "<leader>sp", function() toggle_telescope(harpoon:list()) end,
+            { desc = "[S]earch [H]arpoon window" })
 
 
---vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-    end,
-}
+  --vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+      end,
+  },
+  {
+      'nvim-lualine/lualine.nvim',
+      dependencies = { 'nvim-tree/nvim-web-devicons' },
+      config = function()
+        local function git_dir()
+          local handle = io.popen('git rev-parse --show-toplevel')
+          if handle ~= nil then
+            local result = handle:read("*a"):gsub('[\n\r]', '')
+            handle:close()
+            local _, _, repo = string.find(result, '[/\\]([a-zA-Z0-9-]+)$')
+            return repo
+          end
+          -- return 'Dir'
+        end
+
+        require('lualine').setup {
+          options = {
+            icons_enabled = true,
+            theme = 'iceberg_dark',
+            component_separators = { left = '', right = ''},
+            section_separators = { left = '', right = ''},
+            disabled_filetypes = {
+              statusline = {},
+              winbar = {},
+            },
+            ignore_focus = {},
+            always_divide_middle = true,
+            globalstatus = false,
+            refresh = {
+              statusline = 1000,
+              tabline = 1000,
+              winbar = 1000,
+            }
+          },
+          sections = {
+            lualine_a = {'mode'},
+            lualine_b = {
+              { git_dir, color = { fg = '#36f3f6'}},
+              {'branch', color = {fg = '#36f641'}},
+              'diff',
+              'diagnostics'},
+            lualine_c = {{'filename', path= 1}},
+            lualine_x = {'encoding', 'fileformat', 'filetype'},
+            lualine_y = {'progress'},
+            lualine_z = {'location'}
+          },
+          inactive_sections = {
+            lualine_a = {},
+            lualine_b = {},
+            lualine_c = {'filename'},
+            lualine_x = {'location'},
+            lualine_y = {},
+            lualine_z = {}
+          },
+          tabline = {},
+          winbar = {},
+          inactive_winbar = {},
+          extensions = {}
+        }
+      end,
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
