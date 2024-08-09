@@ -84,6 +84,7 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+require 'containAny'
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -180,28 +181,75 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.keymap.set('n', '<leader>t', function() vim.cmd ':NvimTreeFindFileToggle' end, { desc = 'Toggle [T]reeview' })
+vim.keymap.set('n', '<leader>t', function()
+  vim.cmd ':NvimTreeFindFileToggle'
+end, { desc = 'Toggle [T]reeview' })
 
-vim.keymap.set('n', '<leader>hr', function() vim.cmd ':Gitsigns reset_hunk' end, { desc = 'Git - [H]unk [R]eset' })
-vim.keymap.set('n', '<leader>hn', function() vim.cmd ':Gitsigns next_hunk' end, { desc = 'Git - [H]unk [N]ext' })
-vim.keymap.set('n', '<leader>hp', function() vim.cmd ':Gitsigns prev_hunk' end, { desc = 'Git - [H]unk [P]revious' })
-vim.keymap.set('n', '<leader>hd', function () vim.cmd ':Gitsigns preview_hunk' end, { desc = 'Git - [H]unk [D]iff' })
-vim.keymap.set('n', '<leader>df', function () vim.cmd ':Gitsigns diffthis' end, { desc = 'Git - [D]iff [F]ile' })
-vim.keymap.set('n', '<leader>bt', function () vim.cmd ':Gitsigns toggle_current_line_blame' end, { desc = 'Git - [B]lame [T]oggle' })
-vim.keymap.set('n', '<leader>bl', function () vim.cmd ':Gitsigns blame_line' end, { desc = 'Git - [B]lame [L]ine' })
-vim.keymap.set('n', '<leader>gf', function () vim.cmd ':OpenInGHFileLines' end, { desc = 'Git - [G]it [F]ile' })
+vim.keymap.set('n', '<leader>hr', function()
+  vim.cmd ':Gitsigns reset_hunk'
+end, { desc = 'Git - [H]unk [R]eset' })
+vim.keymap.set('n', '<leader>hn', function()
+  vim.cmd ':Gitsigns next_hunk'
+end, { desc = 'Git - [H]unk [N]ext' })
+vim.keymap.set('n', '<leader>hp', function()
+  vim.cmd ':Gitsigns prev_hunk'
+end, { desc = 'Git - [H]unk [P]revious' })
+vim.keymap.set('n', '<leader>hd', function()
+  vim.cmd ':Gitsigns preview_hunk'
+end, { desc = 'Git - [H]unk [D]iff' })
+vim.keymap.set('n', '<leader>df', function()
+  vim.cmd ':Gitsigns diffthis'
+end, { desc = 'Git - [D]iff [F]ile' })
+vim.keymap.set('n', '<leader>bt', function()
+  vim.cmd ':Gitsigns toggle_current_line_blame'
+end, { desc = 'Git - [B]lame [T]oggle' })
+vim.keymap.set('n', '<leader>bl', function()
+  vim.cmd ':Gitsigns blame_line'
+end, { desc = 'Git - [B]lame [L]ine' })
+vim.keymap.set('n', '<leader>gf', function()
+  vim.cmd ':OpenInGHFileLines'
+end, { desc = 'Git - [G]it [F]ile' })
 
 local function load_file(f)
   vim.cmd('read ~/.config/nvim/snippets/' .. f)
 end
 
-vim.keymap.set('n', '<leader>ad', function () load_file('aw_debug') end, { desc = 'AJW - [A]w [D]ebug screen.debug' })
-vim.keymap.set('n', '<leader>al', function () load_file('aw_log') end, { desc = 'AJW - [A]w [L]og console.log' })
+vim.keymap.set('n', '<leader>ad', function()
+  load_file 'aw_debug'
+end, { desc = 'AJW - [A]w [D]ebug screen.debug' })
+vim.keymap.set('n', '<leader>al', function()
+  load_file 'aw_log'
+end, { desc = 'AJW - [A]w [L]og console.log' })
 
-vim.keymap.set('n', '<leader>anw', function () load_file('aw_no_warn') end, { desc = 'AJW - [A]w [N]o [W]arn no console warnings' })
-vim.keymap.set('n', '<leader>ape', function () load_file('aw_play_eval') end, { desc = 'AJW - [A]w [P]laywright [E]val' })
-vim.keymap.set('n', '<leader>apl', function () load_file('aw_play_log') end, { desc = 'AJW - [A]w [P]laywright [L]og' })
-vim.keymap.set('n', '<leader>ap', function () load_file('aw_props') end, { desc = 'AJW - [A]w [P]rops ' })
+vim.keymap.set('n', '<leader>anw', function()
+  load_file 'aw_no_warn'
+end, { desc = 'AJW - [A]w [N]o [W]arn no console warnings' })
+vim.keymap.set('n', '<leader>ape', function()
+  load_file 'aw_play_eval'
+end, { desc = 'AJW - [A]w [P]laywright [E]val' })
+vim.keymap.set('n', '<leader>apl', function()
+  load_file 'aw_play_log'
+end, { desc = 'AJW - [A]w [P]laywright [L]og' })
+vim.keymap.set('n', '<leader>ap', function()
+  load_file 'aw_props'
+end, { desc = 'AJW - [A]w [P]rops ' })
+vim.keymap.set('n', '<leader>ama', function()
+  load_file 'aw_mock_ajax'
+end, { desc = 'AJW - [A]w [M]ock [A]jax' })
+
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+-- greatest remap ever
+vim.keymap.set('x', '<leader>p', '"_dP')
+
+vim.keymap.set('n', '<leader>d', '"_d')
+vim.keymap.set('v', '<leader>d', '"_d')
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -680,23 +728,33 @@ require('lazy').setup({
     config = function()
       -- Configuration goes here.
       local g = vim.g
+      local opts = {}
+
+      --Exclude certain repos from eslint and prettier
+      local excludeRepo = { 'insightvm-ui-nav-menus' }
+      local dir = vim.fn.getcwd()
+      if not contains_any(dir, excludeRepo) then
+        table.insert(opts, 'eslint')
+        table.insert(opts, 'prettier')
+      end
 
       g.ale_ruby_rubocop_auto_correct_all = 1
       g.ale_set_quickfix = 1
       g.ale_fix_on_save = 1
 
       g.ale_linters = {
-        javascript = { 'eslint', 'prettier' },
-        javascriptreact = { 'eslint', 'prettier' },
-        typescript = { 'eslint', 'prettier' },
-        typescriptreact = { 'eslint', 'prettier' },
+        javascript = opts,
+        javascriptreact = opts,
+        typescript = opts,
+        typescriptreact = opts,
         lua = { 'lua_language_server' },
       }
       g.ale_fixers = {
-        javascript = { 'eslint', 'prettier' },
-        javascriptreact = { 'eslint', 'prettier' },
-        typescript = { 'eslint', 'prettier' },
-        typescriptreact = { 'eslint', 'prettier' },
+        javascript = opts,
+        javascriptreact = opts,
+        typescript = opts,
+        typescriptreact = opts,
+        lua = { 'stylua' },
       }
     end,
   },
@@ -855,7 +913,12 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false, highlight = { comments_only = false } }},
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false, highlight = { comments_only = false } },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -929,114 +992,112 @@ require('lazy').setup({
     'Almo7aya/openingh.nvim',
   },
   {
-      "ThePrimeagen/harpoon",
-      branch = "harpoon2",
-      dependencies = { "nvim-lua/plenary.nvim" },
-      config = function()
-        local harpoon = require("harpoon")
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
 
-        -- REQUIRED
-        harpoon:setup()
-        -- REQUIRED
+      -- REQUIRED
+      harpoon:setup()
+      -- REQUIRED
 
-        vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Har[P]oon [A]dd file' })
-        vim.keymap.set("n", "<leader>pc", function() require('harpoon'):list():remove() end, { desc = 'Har[P]oon [C]lear all files' })
-        --vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+      vim.keymap.set('n', '<leader>pa', function()
+        harpoon:list():add()
+      end, { desc = 'Har[P]oon [A]dd file' })
+      vim.keymap.set('n', '<leader>pc', function()
+        require('harpoon'):list():remove()
+      end, { desc = 'Har[P]oon [C]lear all files' })
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end)
 
-        vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
-        vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
-        vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
-        vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+      vim.keymap.set('n', '<C-h>', function()
+        harpoon:list():select(1)
+      end)
+      vim.keymap.set('n', '<C-t>', function()
+        harpoon:list():select(2)
+      end)
+      vim.keymap.set('n', '<C-n>', function()
+        harpoon:list():select(3)
+      end)
+      vim.keymap.set('n', '<C-s>', function()
+        harpoon:list():select(4)
+      end)
 
-        -- Toggle previous & next buffers stored within Harpoon list
-        vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
-        vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
-
-        local conf = require("telescope.config").values
-        local function toggle_telescope(harpoon_files)
-            local file_paths = {}
-            for _, item in ipairs(harpoon_files.items) do
-                table.insert(file_paths, item.value)
-            end
-
-            require("telescope.pickers").new({}, {
-                prompt_title = "Harpoon",
-                finder = require("telescope.finders").new_table({
-                    results = file_paths,
-                }),
-                previewer = conf.file_previewer({}),
-                sorter = conf.generic_sorter({}),
-            }):find()
-        end
-
-        vim.keymap.set("n", "<leader>sp", function() toggle_telescope(harpoon:list()) end,
-            { desc = "[S]earch [H]arpoon window" })
-
-
-  --vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-      end,
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set('n', '<C-S-P>', function()
+        harpoon:list():prev()
+      end)
+      vim.keymap.set('n', '<C-S-N>', function()
+        harpoon:list():next()
+      end)
+    end,
   },
   {
-      'nvim-lualine/lualine.nvim',
-      dependencies = { 'nvim-tree/nvim-web-devicons' },
-      config = function()
-        local function git_dir()
-          local handle = io.popen('git rev-parse --show-toplevel')
-          if handle ~= nil then
-            local result = handle:read("*a"):gsub('[\n\r]', '')
-            handle:close()
-            local _, _, repo = string.find(result, '[/\\]([a-zA-Z0-9-]+)$')
-            return repo
-          end
-          -- return 'Dir'
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local function git_dir()
+        local handle = io.popen 'git rev-parse --show-toplevel'
+        if handle ~= nil then
+          local result = handle:read('*a'):gsub('[\n\r]', '')
+          handle:close()
+          local _, _, repo = string.find(result, '[/\\]([a-zA-Z0-9-]+)$')
+          return repo
         end
+        -- return 'Dir'
+      end
 
-        require('lualine').setup {
-          options = {
-            icons_enabled = true,
-            theme = 'iceberg_dark',
-            component_separators = { left = '', right = ''},
-            section_separators = { left = '', right = ''},
-            disabled_filetypes = {
-              statusline = {},
-              winbar = {},
-            },
-            ignore_focus = {},
-            always_divide_middle = true,
-            globalstatus = false,
-            refresh = {
-              statusline = 1000,
-              tabline = 1000,
-              winbar = 1000,
-            }
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'iceberg_dark',
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
+          disabled_filetypes = {
+            statusline = {},
+            winbar = {},
           },
-          sections = {
-            lualine_a = {'mode'},
-            lualine_b = {
-              { git_dir, color = { fg = '#36f3f6'}},
-              {'branch', color = {fg = '#36f641'}},
-              'diff',
-              'diagnostics'},
-            lualine_c = {{'filename', path= 1}},
-            lualine_x = {'encoding', 'fileformat', 'filetype'},
-            lualine_y = {'progress'},
-            lualine_z = {'location'}
+          ignore_focus = {},
+          always_divide_middle = true,
+          globalstatus = false,
+          refresh = {
+            statusline = 1000,
+            tabline = 1000,
+            winbar = 1000,
           },
-          inactive_sections = {
-            lualine_a = {},
-            lualine_b = {},
-            lualine_c = {'filename'},
-            lualine_x = {'location'},
-            lualine_y = {},
-            lualine_z = {}
+        },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = {
+            { git_dir, color = { fg = '#00c5c7' } },
+            { 'branch', color = { fg = '#02f202' } },
+            'diff',
+            'diagnostics',
           },
-          tabline = {},
-          winbar = {},
-          inactive_winbar = {},
-          extensions = {}
-        }
-      end,
+          lualine_c = { { 'filename', path = 1 } },
+          lualine_x = { 'filetype', 'encoding', 'fileformat' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { 'filename' },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {},
+      }
+    end,
   },
+  -- "gc" to comment visual regions/lines
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and

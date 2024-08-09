@@ -1,0 +1,20 @@
+import $ from 'jquery';
+
+jest.mock('jquery', () => ({
+  ...jest.requireActual('jquery'),
+  ajax: jest.fn(),
+}));
+
+  beforeEach(() => {
+    $.ajax.mockImplementation((options) => {
+      switch (true) {
+        case /assets/.test(options.url):
+          return $.Deferred().resolve(MOCK_ASSETS);
+
+        case /vulnerabilities/.test(options.url):
+          return $.Deferred().resolve(MOCK_VULNERABILITIES);
+      }
+
+      return $.Deferred().resolve('');
+    });
+  });
