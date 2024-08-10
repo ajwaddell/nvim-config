@@ -1040,7 +1040,7 @@ require('lazy').setup({
           lualine_a = { 'mode' },
           lualine_b = {
             { git_dir, color = { fg = '#00c5c7' } },
-            { 'branch', color = { fg = '#02f202' } },
+            { 'branch', color = { fg = '#02f202' }, icon = { '' } },
             'diff',
             'diagnostics',
           },
