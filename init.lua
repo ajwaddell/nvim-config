@@ -185,27 +185,6 @@ vim.keymap.set('n', '<leader>t', function()
   vim.cmd ':NvimTreeFindFileToggle'
 end, { desc = 'Toggle [T]reeview' })
 
-vim.keymap.set('n', '<leader>hr', function()
-  vim.cmd ':Gitsigns reset_hunk'
-end, { desc = 'Git - [H]unk [R]eset' })
-vim.keymap.set('n', '<leader>hn', function()
-  vim.cmd ':Gitsigns next_hunk'
-end, { desc = 'Git - [H]unk [N]ext' })
-vim.keymap.set('n', '<leader>hp', function()
-  vim.cmd ':Gitsigns prev_hunk'
-end, { desc = 'Git - [H]unk [P]revious' })
-vim.keymap.set('n', '<leader>hd', function()
-  vim.cmd ':Gitsigns preview_hunk'
-end, { desc = 'Git - [H]unk [D]iff' })
-vim.keymap.set('n', '<leader>df', function()
-  vim.cmd ':Gitsigns diffthis'
-end, { desc = 'Git - [D]iff [F]ile' })
-vim.keymap.set('n', '<leader>bt', function()
-  vim.cmd ':Gitsigns toggle_current_line_blame'
-end, { desc = 'Git - [B]lame [T]oggle' })
-vim.keymap.set('n', '<leader>bl', function()
-  vim.cmd ':Gitsigns blame_line'
-end, { desc = 'Git - [B]lame [L]ine' })
 vim.keymap.set('n', '<leader>gf', function()
   vim.cmd ':OpenInGHFileLines'
 end, { desc = 'Git - [G]it [F]ile' })
@@ -321,24 +300,6 @@ require('lazy').setup({
   --
   -- Use `opts = {}` to force a plugin to be loaded.
   --
-
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -1120,7 +1081,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
