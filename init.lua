@@ -729,12 +729,14 @@ require('lazy').setup({
       -- Configuration goes here.
       local g = vim.g
       local opts = {}
+      --Exclude certain repos from lint rules
+      local exclude = require 'repoExcludeLint'
 
-      --Exclude certain repos from eslint and prettier
-      local excludeRepo = { 'insightvm-ui-nav-menus' }
       local dir = vim.fn.getcwd()
-      if not contains_any(dir, excludeRepo) then
+      if not contains_any(dir, exclude.eslint) then
         table.insert(opts, 'eslint')
+      end
+      if not contains_any(dir, exclude.prettier) then
         table.insert(opts, 'prettier')
       end
 
