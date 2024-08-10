@@ -1038,15 +1038,16 @@ require('lazy').setup({
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
+      local handle = io.popen 'git rev-parse --show-toplevel'
+      local repo
+      if handle ~= nil then
+        local result = handle:read('*a'):gsub('[\n\r]', '')
+        handle:close()
+        _, _, repo = string.find(result, '[/\\]([a-zA-Z0-9-]+)$')
+      end
+
       local function git_dir()
-        local handle = io.popen 'git rev-parse --show-toplevel'
-        if handle ~= nil then
-          local result = handle:read('*a'):gsub('[\n\r]', '')
-          handle:close()
-          local _, _, repo = string.find(result, '[/\\]([a-zA-Z0-9-]+)$')
-          return repo
-        end
-        -- return 'Dir'
+        return repo
       end
 
       require('lualine').setup {
