@@ -181,10 +181,6 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.keymap.set('n', '<leader>t', function()
-  vim.cmd ':NvimTreeFindFileToggle'
-end, { desc = 'Toggle [T]reeview' })
-
 vim.keymap.set('n', '<leader>gf', function()
   vim.cmd ':OpenInGHFileLines'
 end, { desc = 'Git - [G]it [F]ile' })
@@ -935,22 +931,6 @@ require('lazy').setup({
   { -- Copilot
     'github/copilot.vim',
   },
-  { -- treeview
-    'nvim-tree/nvim-tree.lua',
-    version = '*',
-    dependencies = {
-      { 'nvim-tree/nvim-web-devicons' },
-    },
-    config = function()
-      vim.g.loaded_netrw = 1
-      vim.g.loaded_netwPlugin = 1
-      require('nvim-tree').setup {
-        view = {
-          width = 60,
-        },
-      }
-    end,
-  },
   {
     'Almo7aya/openingh.nvim',
   },
@@ -1080,7 +1060,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
